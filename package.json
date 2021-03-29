@@ -9,9 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sowlutions/react-native-clear-cache.git",
-    "baseUrl": "https://github.com/sowlutions/react-native-clear-cache"
+    "url": "https://github.com/webyonet/react-native-clear-cache.git"
   },
+  "homepage": "https://github.com/webyonet/react-native-clear-cache"
   "keywords": [
     "react-native"
   ],
