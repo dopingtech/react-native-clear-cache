@@ -3,17 +3,14 @@ package com.reactlibrary;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.File;
+import java.util.Objects;
 
 public class ClearCacheModule extends ReactContextBaseJavaModule {
 
@@ -35,14 +32,12 @@ public class ClearCacheModule extends ReactContextBaseJavaModule {
     //获取缓存大小
     @ReactMethod
     public void getAppCacheSize(Callback callback) {
-        // 计算缓存大小
         long fileSize = 0;
         File filesDir = getReactApplicationContext().getFilesDir();// /data/data/package_name/files
         File cacheDir = getReactApplicationContext().getCacheDir();// /data/data/package_name/cache
         fileSize += getDirSize(filesDir);
         fileSize += getDirSize(cacheDir);
-        // 2.2版本才有将应用缓存转移到sd卡的功能
-        if (isMethodsCompat(android.os.Build.VERSION_CODES.FROYO)) {
+        if (isMethodsCompat()) {
             File externalCacheDir = getExternalCacheDir(getReactApplicationContext());//"<sdcard>/Android/data/<package_name>/cache/"
             fileSize += getDirSize(externalCacheDir);
         }
@@ -71,6 +66,7 @@ public class ClearCacheModule extends ReactContextBaseJavaModule {
         }
         long dirSize = 0;
         File[] files = dir.listFiles();
+        assert files != null;
         for (File file : files) {
             if (file.isFile()) {
                 dirSize += file.length();
@@ -82,9 +78,9 @@ public class ClearCacheModule extends ReactContextBaseJavaModule {
         return dirSize;
     }
 
-    private boolean isMethodsCompat(int VersionCode) {
+    private boolean isMethodsCompat() {
         int currentVersion = android.os.Build.VERSION.SDK_INT;
-        return currentVersion >= VersionCode;
+        return currentVersion >= android.os.Build.VERSION_CODES.FROYO;
     }
 
     private File getExternalCacheDir(Context context) {
@@ -131,7 +127,7 @@ public class ClearCacheModule extends ReactContextBaseJavaModule {
         getReactApplicationContext().deleteDatabase("webviewCache.db-wal");
         clearCacheFolder(getReactApplicationContext().getFilesDir(), System.currentTimeMillis());
         clearCacheFolder(getReactApplicationContext().getCacheDir(), System.currentTimeMillis());
-        if (isMethodsCompat(android.os.Build.VERSION_CODES.FROYO)) {
+        if (isMethodsCompat()) {
             clearCacheFolder(getExternalCacheDir(getReactApplicationContext()), System.currentTimeMillis());
         }
 
@@ -141,7 +137,7 @@ public class ClearCacheModule extends ReactContextBaseJavaModule {
         int deletedFiles = 0;
         if (dir != null && dir.isDirectory()) {
             try {
-                for (File child : dir.listFiles()) {
+                for (File child : Objects.requireNonNull(dir.listFiles())) {
                     if (child.isDirectory()) {
                         deletedFiles += clearCacheFolder(child, curTime);
                     }
