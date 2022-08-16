@@ -9,16 +9,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/webyonet/react-native-clear-cache.git"
+    "url": "git+https://github.com/webyonet/react-native-clear-cache.git",
+    "baseUrl": "https://github.com/webyonet/react-native-clear-cache"
   },
   "homepage": "https://github.com/webyonet/react-native-clear-cache",
   "keywords": [
     "react-native"
   ],
-  "author": {
-    "name": "Sowlutions Inc.",
-    "email": "tech@sowlutions.com"
-  },
   "license": "MIT",
   "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",
